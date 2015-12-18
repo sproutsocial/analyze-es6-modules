@@ -1,0 +1,29 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"errors": [
+			{
+				"type": "missingModule",
+				"importingModule": "index",
+				"exportingModule": "missing1"
+			},
+			{
+				"type": "missingModule",
+				"importingModule": "index",
+				"exportingModule": "missing2"
+			},
+			{
+				"type": "missingModule",
+				"importingModule": "index",
+				"exportingModule": "missing3"
+			},
+			{
+				"type": "missingModule",
+				"importingModule": "index",
+				"exportingModule": "missing4"
+			}
+		]
+	}
+}

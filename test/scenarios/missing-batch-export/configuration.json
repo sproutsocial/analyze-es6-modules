@@ -1,0 +1,14 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"errors": [
+			{
+				"type": "missingModule",
+				"importingModule": "index",
+				"exportingModule": "missing"
+			}
+		]
+	}
+}

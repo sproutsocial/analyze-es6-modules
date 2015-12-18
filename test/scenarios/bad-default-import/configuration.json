@@ -1,0 +1,15 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"errors": [
+			{
+				"type": "badImport",
+				"importingModule": "index",
+				"exportingModule": "config",
+				"exportType": "default"
+			}
+		]
+	}
+}

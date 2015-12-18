@@ -1,0 +1,74 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"modules": [
+			{
+				"path": "class",
+				"imports": [
+					{
+						"type": "named",
+						"exportingModule": "config",
+						"exportName": "timeout"
+					}
+				],
+				"exports": [
+					{
+						"type": "default"
+					}
+				]
+			},
+			{
+				"path": "config",
+				"imports": [],
+				"exports": [
+					{
+						"type": "named",
+						"exportName": "path"
+					},
+					{
+						"type": "named",
+						"exportName": "timeout"
+					}
+				]
+			},
+			{
+				"path": "index",
+				"imports": [
+					{
+						"type": "default",
+						"exportingModule": "class"
+					},
+					{
+						"type": "batch",
+						"exportingModule": "config"
+					},
+					{
+						"type": "named",
+						"exportingModule": "config",
+						"exportName": "path"
+					}
+				],
+				"exports": [
+					{
+						"type": "default"
+					}
+				]
+			},
+			{
+				"path": "tasks",
+				"imports": [],
+				"exports": [
+					{
+						"type": "batch",
+						"exportingModule": "config"
+					},
+					{
+						"type": "default"
+					}
+				]
+			}
+		]
+	}
+}
