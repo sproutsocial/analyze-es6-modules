@@ -12,7 +12,8 @@ export function analyzeModules ({ modules }) {
 
 	return {
 		modules, // TODO: Optional
-		errors: errors
+		errors: errors,
+		warnings: []
 	};
 }
 
@@ -94,10 +95,11 @@ function findBadImports({ modules }) {
 }
 
 function buildExportMap(modules) {
-	return modules.reduce((exportMap, module) => {
+	const exportMap = modules.reduce((exportMap, module) => {
 		const exports = {
 			'default': false,
-			named: []
+			named: [],
+			batch: []
 		};
 
 		module.exports.forEach((moduleExport) => {
@@ -108,6 +110,9 @@ function buildExportMap(modules) {
 				case 'named':
 					exports.named.push(moduleExport.exportName);
 					break;
+				case 'batch':
+					exports.batch.push(moduleExport.exportingModule);
+					break;
 			}
 		});
 
@@ -115,6 +120,33 @@ function buildExportMap(modules) {
 
 		return exportMap;
 	}, {});
+
+	return Object.keys(exportMap).reduce((exportMap, path) => {
+		exportMap[path] = {
+			'default': exportMap[path]['default'],
+			named: resolveAllNamedImports(exportMap, path)
+		};
+
+		return exportMap;
+	}, exportMap);
+}
+
+function resolveAllNamedImports(exportMap, path, stack = []) {
+	// Missing module errors are reported elsewhere
+	if (!exportMap[path]) {
+		return [];
+	}
+
+	if (stack.indexOf(path) >= 0) {
+		return exportMap[path].named;
+	}
+
+	const batchExports = exportMap[path].batch || [];
+
+	return batchExports.reduce((namedImports, batchPath) => {
+		const newStack = stack.concat([path]);
+		return namedImports.concat(resolveAllNamedImports(exportMap, batchPath, newStack));
+	}, exportMap[path].named);
 }
 
 function findUnusedExports({ modules }) {

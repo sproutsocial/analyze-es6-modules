@@ -31,6 +31,10 @@ function runScenario(scenarioName) {
 		} else {
 			console.info('Scenario passed: ' + scenarioName);
 		}
+	}, function(error) {
+		console.error('Scenario failure: ' + scenarioName);
+		console.error(error && error.stack);
+		process.exit(-2);
 	});
 }
 

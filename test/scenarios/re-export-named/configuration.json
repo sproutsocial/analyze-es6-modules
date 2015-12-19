@@ -1,0 +1,42 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"errors": [],
+		"warnings": [],
+		"modules": [
+			{
+				"path": "config",
+				"imports": [],
+				"exports": [
+					{
+						"type": "named",
+						"exportName": "path"
+					}
+				]
+			},
+			{
+				"path": "index",
+				"imports": [
+					{
+						"type": "named",
+						"exportingModule": "tasks",
+						"exportName": "path"
+					}
+				],
+				"exports": []
+			},
+			{
+				"path": "tasks",
+				"imports": [],
+				"exports": [
+					{
+						"type": "batch",
+						"exportingModule": "config"
+					}
+				]
+			}
+		]
+	}
+}
