@@ -1,0 +1,14 @@
+{
+	"options": {
+		"sources": ["**/*.js"],
+		"predefined": {
+			"lodash": {
+				"named": ["forEach", "filter"]
+			}
+		}
+	},
+	"result": {
+		"errors": [],
+		"warnings": []
+	}
+}

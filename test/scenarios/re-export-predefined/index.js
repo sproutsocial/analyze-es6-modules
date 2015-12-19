@@ -1,0 +1,1 @@
+import { forEach, filter } from './all';

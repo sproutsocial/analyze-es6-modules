@@ -1,17 +1,11 @@
-export function analyzeModules ({ modules, predefinedModules }) {
-	// TODO: Break up into error checking/style linting?
-	// TODO: Duplicate exports? (Imports covered by Babel?)
-	// TODO: Whitelist (modules that aren't found but exist)
-	// TODO: blacklist (modules that are found but shouldn't be used)
-	// TODO: Circularly dependent modules
-
+export function analyzeModules({ modules, predefinedModules }) {
 	var errors = [];
 
 	errors = errors.concat(findBadModuleReferences({ modules, predefinedModules }));
 	errors = errors.concat(findBadImports({ modules, predefinedModules }));
 
 	return {
-		modules, // TODO: Optional
+		modules,
 		errors: errors,
 		warnings: []
 	};
@@ -54,7 +48,7 @@ function findBadModuleReferences({ modules, predefinedModules }) {
 }
 
 function findBadImports({ modules,  predefinedModules }) {
-	const exportMap = buildExportMap(modules);
+	const exportMap = buildExportMap({ modules,  predefinedModules });
 
 	return modules.reduce((errors, module) => {
 		return module.imports.reduce((errors, moduleImport) => {
@@ -130,7 +124,7 @@ function findBadImports({ modules,  predefinedModules }) {
 	}, []);
 }
 
-function buildExportMap(modules) {
+function buildExportMap({ modules, predefinedModules }) {
 	const exportMap = modules.reduce((exportMap, module) => {
 		const exports = {
 			'default': false,
@@ -160,14 +154,18 @@ function buildExportMap(modules) {
 	return Object.keys(exportMap).reduce((exportMap, path) => {
 		exportMap[path] = {
 			'default': exportMap[path]['default'],
-			named: resolveAllNamedImports(exportMap, path)
+			named: resolveAllNamedImports(predefinedModules, exportMap, path)
 		};
 
 		return exportMap;
 	}, exportMap);
 }
 
-function resolveAllNamedImports(exportMap, path, stack = []) {
+function resolveAllNamedImports(predefinedModules, exportMap, path, stack = []) {
+	if (predefinedModules[path]) {
+		return predefinedModules[path].named || [];
+	}
+
 	// Missing module errors are reported elsewhere
 	if (!exportMap[path]) {
 		return [];
@@ -181,7 +179,7 @@ function resolveAllNamedImports(exportMap, path, stack = []) {
 
 	return batchExports.reduce((namedImports, batchPath) => {
 		const newStack = stack.concat([path]);
-		return namedImports.concat(resolveAllNamedImports(exportMap, batchPath, newStack));
+		return namedImports.concat(resolveAllNamedImports(predefinedModules, exportMap, batchPath, newStack));
 	}, exportMap[path].named);
 }
 
