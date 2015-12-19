@@ -1,0 +1,49 @@
+{
+	"options": {
+		"sources": ["**/*.js"],
+		"predefined": {
+			"jQuery": {
+				"default": true
+			},
+			"lodash": {
+				"named": ["forEach", "filter"]
+			},
+			"d3": true
+		}
+	},
+	"result": {
+		"errors": [],
+		"warnings": [],
+		"modules": [
+			{
+				"path": "index",
+				"exports": [],
+				"imports": [
+					{
+						"type": "default",
+						"exportingModule": "jQuery"
+					},
+					{
+						"type": "named",
+						"exportingModule": "lodash",
+						"exportName": "forEach"
+					},
+					{
+						"type": "named",
+						"exportingModule": "lodash",
+						"exportName": "filter"
+					},
+					{
+						"type": "default",
+						"exportingModule": "d3"
+					},
+					{
+						"type": "named",
+						"exportingModule": "d3",
+						"exportName": "select"
+					}
+				]
+			}
+		]
+	}
+}

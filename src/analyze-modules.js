@@ -1,4 +1,4 @@
-export function analyzeModules ({ modules }) {
+export function analyzeModules ({ modules, predefinedModules }) {
 	// TODO: Break up into error checking/style linting?
 	// TODO: Duplicate exports? (Imports covered by Babel?)
 	// TODO: Whitelist (modules that aren't found but exist)
@@ -7,8 +7,8 @@ export function analyzeModules ({ modules }) {
 
 	var errors = [];
 
-	errors = errors.concat(findBadModuleReferences({ modules }));
-	errors = errors.concat(findBadImports({ modules }));
+	errors = errors.concat(findBadModuleReferences({ modules, predefinedModules }));
+	errors = errors.concat(findBadImports({ modules, predefinedModules }));
 
 	return {
 		modules, // TODO: Optional
@@ -17,14 +17,14 @@ export function analyzeModules ({ modules }) {
 	};
 }
 
-function findBadModuleReferences({ modules }) {
+function findBadModuleReferences({ modules, predefinedModules }) {
 	const modulePaths = modules.map((module) => module.path);
 
 	return modules.reduce((errors, module) => {
 		module.imports.forEach((moduleImport) => {
 			const source = moduleImport.exportingModule;
 
-			if (modulePaths.indexOf(source) < 0) {
+			if (modulePaths.indexOf(source) < 0 && !predefinedModules[source]) {
 				errors.push({
 					type: 'missingModule',
 					importingModule: module.path,
@@ -40,7 +40,7 @@ function findBadModuleReferences({ modules }) {
 
 			const source = moduleExport.exportingModule;
 
-			if (modulePaths.indexOf(source) < 0) {
+			if (modulePaths.indexOf(source) < 0  && !predefinedModules[source]) {
 				errors.push({
 					type: 'missingModule',
 					importingModule: module.path,
@@ -53,31 +53,42 @@ function findBadModuleReferences({ modules }) {
 	}, []);
 }
 
-function findBadImports({ modules }) {
+function findBadImports({ modules,  predefinedModules }) {
 	const exportMap = buildExportMap(modules);
 
 	return modules.reduce((errors, module) => {
 		return module.imports.reduce((errors, moduleImport) => {
+			const predefined = predefinedModules[moduleImport.exportingModule];
 			const moduleExportMap = exportMap[moduleImport.exportingModule];
 
 			// Module not found, error is reported elsewhere
-			if (!moduleExportMap) {
+			if (!predefined && !moduleExportMap) {
 				return errors;
 			}
 
-			switch (moduleImport.type) {
-				case 'default':
-					if (!moduleExportMap['default']) {
+			if (predefined) {
+				switch (moduleImport.type) {
+					case 'default':
+						if (predefined === true || (predefined && predefined['default'])) {
+							break;
+						}
+
 						errors.push({
 							type: 'badImport',
 							importingModule: module.path,
 							exportingModule: moduleImport.exportingModule,
 							exportType: 'default'
 						});
-					}
-					break;
-				case 'named':
-					if (moduleExportMap.named.indexOf(moduleImport.exportName) < 0) {
+						break;
+					case 'named':
+						if (predefined === true) {
+							break;
+						}
+
+						if (predefined && predefined.named && predefined.named.indexOf(moduleImport.exportName) >= 0) {
+							break;
+						}
+
 						errors.push({
 							type: 'badImport',
 							importingModule: module.path,
@@ -85,8 +96,33 @@ function findBadImports({ modules }) {
 							exportType: 'named',
 							exportName: moduleImport.exportName
 						});
-					}
-					break;
+						break;
+				}
+			} else {
+				switch (moduleImport.type) {
+					case 'default':
+						if (!moduleExportMap['default']) {
+							errors.push({
+								type: 'badImport',
+								importingModule: module.path,
+								exportingModule: moduleImport.exportingModule,
+								exportType: 'default'
+							});
+						}
+						break;
+					case 'named':
+						if (moduleExportMap.named.indexOf(moduleImport.exportName) < 0) {
+							errors.push({
+								type: 'badImport',
+								importingModule: module.path,
+								exportingModule: moduleImport.exportingModule,
+								exportType: 'named',
+								exportName: moduleImport.exportName
+							});
+						}
+
+						break;
+				}
 			}
 
 			return errors;

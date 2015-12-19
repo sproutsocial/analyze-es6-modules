@@ -17,7 +17,8 @@ module.exports = function(options) {
 
 		const analyzeOptions = {
 			cwd: cwd,
-			modules: modules
+			modules: modules,
+			predefinedModules: options.predefined || {}
 		};
 
 		return analyzeModules(analyzeOptions);

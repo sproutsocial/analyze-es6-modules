@@ -100,7 +100,12 @@ class ModuleParser {
 	}
 
 	resolveImportModulePath(importingModulePath, exportingModuleRelativePath) {
-		// TODO: Check global modules and aliases
+		// TODO: Check aliases
+
+		if (exportingModuleRelativePath[0] !== '.') {
+			return exportingModuleRelativePath;
+		}
+
 		const fullImportModulePath = pathModule.join(this.cwd, importingModulePath);
 		const importingModuleDirectory = fullImportModulePath.replace(/\/[^/]+$/g, '');
 		const exportingModulePath = pathModule.resolve(importingModuleDirectory, exportingModuleRelativePath);

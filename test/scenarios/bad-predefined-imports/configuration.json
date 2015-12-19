@@ -1,0 +1,38 @@
+{
+	"options": {
+		"sources": ["**/*.js"],
+		"predefined": {
+			"jQuery": {
+				"default": true
+			},
+			"lodash": {
+				"named": ["forEach", "filter"]
+			}
+		}
+	},
+	"result": {
+		"errors": [
+			{
+				"type": "badImport",
+				"importingModule": "index",
+				"exportingModule": "jQuery",
+				"exportType": "named",
+				"exportName": "each"
+			},
+			{
+				"type": "badImport",
+				"importingModule": "index",
+				"exportingModule": "lodash",
+				"exportType": "default"
+			},
+			{
+				"type": "badImport",
+				"importingModule": "index",
+				"exportingModule": "lodash",
+				"exportType": "named",
+				"exportName": "reduce"
+			}
+		],
+		"warnings": []
+	}
+}
