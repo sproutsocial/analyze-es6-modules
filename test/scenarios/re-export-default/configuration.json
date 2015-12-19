@@ -1,0 +1,48 @@
+{
+	"description": "Default exports are not re-exported with a batch export. (Source: Babel transpiled code)",
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"errors": [
+			{
+				"type": "badImport",
+				"importingModule": "index",
+				"exportingModule": "all",
+				"exportType": "default"
+			}
+		],
+		"warnings": [],
+		"modules": [
+			{
+				"path": "all",
+				"imports": [],
+				"exports": [
+					{
+						"type": "batch",
+						"exportingModule": "class"
+					}
+				]
+			},
+			{
+				"path": "class",
+				"imports": [],
+				"exports": [
+					{
+						"type": "default"
+					}
+				]
+			},
+			{
+				"path": "index",
+				"imports": [
+					{
+						"type": "default",
+						"exportingModule": "all"
+					}
+				],
+				"exports": []
+			}
+		]
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"modules": [
+			{
+				"path": "index",
+				"imports": [],
+				"exports": [
+					{
+						"type": "default"
+					}
+				]
+			}
+		]
+	}
+}

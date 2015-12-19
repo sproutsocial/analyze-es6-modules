@@ -1,0 +1,30 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"modules": [
+			{
+				"path": "class",
+				"imports": [],
+				"exports": [
+					{
+						"type": "default"
+					}
+				]
+			},
+			{
+				"path": "index",
+				"imports": [
+					{
+						"type": "default",
+						"exportingModule": "class"
+					}
+				],
+				"exports": []
+			}
+		],
+		"errors": [],
+		"warnings": []
+	}
+}

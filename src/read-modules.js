@@ -49,7 +49,11 @@ class ModuleParser {
 		declaration.specifiers.forEach((specifier) => {
 			switch (specifier.type) {
 				case 'ImportSpecifier':
-					module.addNamedImport(specifier.imported.name, source);
+					if (specifier.imported.name === 'default') {
+						module.addDefaultImport(source);
+					} else {
+						module.addNamedImport(specifier.imported.name, source);
+					}
 					break;
 				case 'ImportDefaultSpecifier':
 					module.addDefaultImport(source);
@@ -82,7 +86,11 @@ class ModuleParser {
 			}
 		} else if (declaration.specifiers) {
 			declaration.specifiers.forEach((specifier) => {
-				module.addNamedExport(specifier.exported.name);
+				if (specifier.exported.name === 'default') {
+					module.addDefaultExport();
+				} else {
+					module.addNamedExport(specifier.exported.name);
+				}
 			});
 		}
 	}
