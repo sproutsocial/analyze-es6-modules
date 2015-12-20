@@ -6,6 +6,7 @@ module.exports = function(options) {
 
 	var readModulesOptions = {
 		cwd: cwd,
+		babel: options.babel || {},
 		sources: options.sources,
 		aliases: options.aliases || {},
 		fileReader: options.fileReader || require('./dist/utility').readFileFromFileSystem

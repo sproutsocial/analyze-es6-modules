@@ -141,11 +141,15 @@ class ModuleParser {
 
 }
 
-export function readModules({ cwd, sources, aliases, fileReader }) {
+export function readModules({ cwd, sources, aliases, fileReader, babel: userBabelOptions }) {
+	const babelOptions = {
+		plugins: userBabelOptions.plugins || []
+	};
+
 	return expandFilePatterns(cwd, sources).then((filePaths) => {
 		const modulePromises = filePaths.map((filePath) => {
 			return fileReader(filePath).then((fileContents) => {
-				const ast = babel.transform(fileContents).ast;
+				const ast = babel.transform(fileContents, babelOptions).ast;
 
 				const moduleParser = new ModuleParser({ cwd, filePath, aliases, ast });
 				return moduleParser.parseModule();
