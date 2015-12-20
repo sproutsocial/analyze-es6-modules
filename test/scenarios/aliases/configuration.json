@@ -15,8 +15,7 @@
 		}
 	},
 	"result": {
-		"errors": [],
-		"warnings": [],
+		"issues": [],
 		"modules": [
 			{
 				"path": "config",
@@ -24,7 +23,8 @@
 				"exports": [
 					{
 						"type": "named",
-						"exportName": "path"
+						"exportName": "path",
+						"lineNumber": 1
 					}
 				]
 			},
@@ -34,17 +34,29 @@
 				"imports": [
 					{
 						"type": "default",
-						"exportingModule": "moment-timezone"
+						"exportingModule": {
+							"raw": "moment",
+							"resolved": "moment-timezone"
+						},
+						"lineNumber": 1
 					},
 					{
 						"type": "named",
-						"exportingModule": "misc/util/time",
-						"exportName": "convert"
+						"exportingModule": {
+							"raw": "util/time",
+							"resolved": "misc/util/time"
+						},
+						"exportName": "convert",
+						"lineNumber": 2
 					},
 					{
 						"type": "named",
-						"exportingModule": "config",
-						"exportName": "path"
+						"exportingModule": {
+							"raw": "app/config",
+							"resolved": "config"
+						},
+						"exportName": "path",
+						"lineNumber": 3
 					}
 				]
 			},
@@ -54,7 +66,8 @@
 				"exports": [
 					{
 						"type": "named",
-						"exportName": "convert"
+						"exportName": "convert",
+						"lineNumber": 1
 					}
 				]
 			}

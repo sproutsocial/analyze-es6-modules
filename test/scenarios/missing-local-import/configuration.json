@@ -3,26 +3,42 @@
 		"sources": ["**/*.js"]
 	},
 	"result": {
-		"errors": [
+		"issues": [
 			{
 				"type": "missingModule",
 				"importingModule": "index",
-				"exportingModule": "missing1"
+				"exportingModule": {
+					"raw": "./missing1",
+					"resolved": "missing1"
+				},
+				"lineNumber": 1
 			},
 			{
 				"type": "missingModule",
 				"importingModule": "index",
-				"exportingModule": "missing2"
+				"exportingModule": {
+					"raw": "./missing2",
+					"resolved": "missing2"
+				},
+				"lineNumber": 2
 			},
 			{
 				"type": "missingModule",
 				"importingModule": "index",
-				"exportingModule": "missing3"
+				"exportingModule": {
+					"raw": "./missing3",
+					"resolved": "missing3"
+				},
+				"lineNumber": 3
 			},
 			{
 				"type": "missingModule",
 				"importingModule": "index",
-				"exportingModule": "missing4"
+				"exportingModule": {
+					"raw": "./missing4",
+					"resolved": "missing4"
+				},
+				"lineNumber": 4
 			}
 		]
 	}

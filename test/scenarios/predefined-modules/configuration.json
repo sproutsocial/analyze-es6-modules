@@ -21,26 +21,46 @@
 				"imports": [
 					{
 						"type": "default",
-						"exportingModule": "jQuery"
+						"exportingModule": {
+							"raw": "jQuery",
+							"resolved": "jQuery"
+						},
+						"lineNumber": 1
 					},
 					{
 						"type": "named",
-						"exportingModule": "lodash",
-						"exportName": "forEach"
+						"exportingModule": {
+							"raw": "lodash",
+							"resolved": "lodash"
+						},
+						"exportName": "forEach",
+						"lineNumber": 2
 					},
 					{
 						"type": "named",
-						"exportingModule": "lodash",
-						"exportName": "filter"
+						"exportingModule": {
+							"raw": "lodash",
+							"resolved": "lodash"
+						},
+						"exportName": "filter",
+						"lineNumber": 2
 					},
 					{
 						"type": "default",
-						"exportingModule": "d3"
+						"exportingModule": {
+							"raw": "d3",
+							"resolved": "d3"
+						},
+						"lineNumber": 4
 					},
 					{
 						"type": "named",
-						"exportingModule": "d3",
-						"exportName": "select"
+						"exportingModule": {
+							"raw": "d3",
+							"resolved": "d3"
+						},
+						"exportName": "select",
+						"lineNumber": 5
 					}
 				]
 			}

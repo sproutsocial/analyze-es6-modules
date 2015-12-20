@@ -40,69 +40,98 @@ class ModuleParser {
 	}
 
 	handleImportDeclaration(module, declaration) {
-		const source = this.resolveImportModulePath(module.path, declaration.source.value);
+		const rawSourcePath = declaration.source.value;
+		const sourcePath = this.resolveImportModulePath(module.path, rawSourcePath);
 
 		if (declaration.specifiers.length === 0) {
-			module.addSideEffectImport(source);
+			module.addSideEffectImport({
+				sourcePath, rawSourcePath,
+				lineNumber: declaration.loc.start.line
+			});
 			return;
 		}
 
 		declaration.specifiers.forEach((specifier) => {
+			const lineNumber = specifier.loc.start.line;
+
 			switch (specifier.type) {
 				case 'ImportSpecifier':
-					if (specifier.imported.name === 'default') {
-						module.addDefaultImport(source);
+					const exportName = specifier.imported.name;
+
+					if (exportName === 'default') {
+						module.addDefaultImport({ sourcePath, rawSourcePath, lineNumber });
 					} else {
-						module.addNamedImport(specifier.imported.name, source);
+						module.addNamedImport({ exportName, sourcePath, rawSourcePath, lineNumber });
 					}
 					break;
 				case 'ImportDefaultSpecifier':
-					module.addDefaultImport(source);
+					module.addDefaultImport({ sourcePath, rawSourcePath, lineNumber });
 					break;
 				case 'ImportNamespaceSpecifier':
-					module.addBatchImport(source);
+					module.addBatchImport({ sourcePath, rawSourcePath, lineNumber });
 					break;
 			}
 		});
 	}
 
 	handleExportAllDeclaration(module, declaration) {
-		const source = this.resolveImportModulePath(module.path, declaration.source.value);
-		module.addBatchExport(source);
+		const rawSourcePath = declaration.source.value;
+		const sourcePath = this.resolveImportModulePath(module.path, rawSourcePath);
+		const lineNumber = declaration.loc.start.line;
+
+		module.addBatchExport({ sourcePath, rawSourcePath, lineNumber });
 	}
 
 	handleExportNamedDeclaration(module, declaration) {
 		if (declaration.source) {
 			declaration.specifiers.forEach((specifier) => {
-				const source = this.resolveImportModulePath(module.path, declaration.source.value);
-				module.addReExport(specifier.exported.name, specifier.local.name, source);
+				const rawSourcePath = declaration.source.value;
+				const sourcePath = this.resolveImportModulePath(module.path, rawSourcePath);
+
+
+				module.addReExport({
+					exportedName: specifier.exported.name,
+					importedName: specifier.local.name, source,
+					rawSourcePath,
+					sourcePath,
+					lineNumber: specifier.loc.start.line
+				});
 			});
 		} else if (declaration.declaration) {
 			if (declaration.declaration.type === 'FunctionDeclaration') {
-				module.addNamedExport(declaration.declaration.id.name);
+				module.addNamedExport({
+					exportName: declaration.declaration.id.name,
+					lineNumber: declaration.declaration.loc.start.line
+				});
 			} else if (declaration.declaration.type === 'VariableDeclaration') {
 				declaration.declaration.declarations.forEach((d) => {
-					module.addNamedExport(d.id.name);
+					module.addNamedExport({
+						exportName: d.id.name,
+						lineNumber: d.loc.start.line
+					});
 				});
 			}
 		} else if (declaration.specifiers) {
 			declaration.specifiers.forEach((specifier) => {
-				if (specifier.exported.name === 'default') {
-					module.addDefaultExport();
+				const exportName = specifier.exported.name;
+				const lineNumber = specifier.loc.start.line;
+
+				if (exportName === 'default') {
+					module.addDefaultExport({ lineNumber });
 				} else {
-					module.addNamedExport(specifier.exported.name);
+					module.addNamedExport({ exportName, lineNumber });
 				}
 			});
 		}
 	}
 
 	handleExportDefaultDeclaration(module, declaration) {
-		module.addDefaultExport();
+		const lineNumber = declaration.loc.start.line;
+
+		module.addDefaultExport({ lineNumber });
 	}
 
 	resolveImportModulePath(importingModulePath, exportingModuleRelativePath) {
-		// TODO: Preserve original value for reporting
-
 		if (exportingModuleRelativePath[0] === '.') {
 			const fullImportModulePath = pathModule.join(this.cwd, importingModulePath);
 			const importingModuleDirectory = fullImportModulePath.replace(/\/[^/]+$/g, '');

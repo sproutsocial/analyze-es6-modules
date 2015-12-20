@@ -4,15 +4,18 @@
 		"sources": ["**/*.js"]
 	},
 	"result": {
-		"errors": [
+		"issues": [
 			{
 				"type": "badImport",
 				"importingModule": "index",
-				"exportingModule": "all",
-				"exportType": "default"
+				"exportingModule": {
+					"raw": "./all",
+					"resolved": "all"
+				},
+				"exportType": "default",
+				"lineNumber": 1
 			}
 		],
-		"warnings": [],
 		"modules": [
 			{
 				"path": "all",
@@ -20,7 +23,11 @@
 				"exports": [
 					{
 						"type": "batch",
-						"exportingModule": "class"
+						"exportingModule": {
+							"raw": "./class",
+							"resolved": "class"
+						},
+						"lineNumber": 1
 					}
 				]
 			},
@@ -29,7 +36,8 @@
 				"imports": [],
 				"exports": [
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 1
 					}
 				]
 			},
@@ -38,7 +46,11 @@
 				"imports": [
 					{
 						"type": "default",
-						"exportingModule": "all"
+						"exportingModule": {
+							"raw": "./all",
+							"resolved": "all"
+						},
+						"lineNumber": 1
 					}
 				],
 				"exports": []

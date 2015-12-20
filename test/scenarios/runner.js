@@ -43,12 +43,8 @@ function normalizeResult(result) {
 		result.modules = _.sortByAll(result.modules, ['path']);
 	}
 
-	if (result.errors) {
-		result.errors = _.sortByAll(result.errors, ['type', 'importingModule', 'exportingModule', 'line']);
-	}
-
-	if (result.warnings) {
-		result.warnings = _.sortByAll(result.warnings, ['type', 'importingModule', 'exportingModule', 'line']);
+	if (result.issues) {
+		result.errors = _.sortByAll(result.errors, ['type', 'importingModule', 'exportingModule.resolved', 'line']);
 	}
 
 	return JSON.parse(JSON.stringify(result));
@@ -59,7 +55,7 @@ function compareResultAndExpected(actual, expected) {
 	actual = JSON.parse(JSON.stringify(actual));
 	expected = JSON.parse(JSON.stringify(expected));
 
-	if (!expected.modules && !expected.errors && !expected.warnings) {
+	if (!expected.modules && !expected.issues) {
 		return false;
 	}
 
@@ -67,11 +63,7 @@ function compareResultAndExpected(actual, expected) {
 		return false;
 	}
 
-	if (expected.errors && !_.isEqual(actual.errors, expected.errors)) {
-		return false;
-	}
-
-	if (expected.warnings && !_.isEqual(actual.warnings, expected.warnings)) {
+	if (expected.issues && !_.isEqual(actual.issues, expected.issues)) {
 		return false;
 	}
 

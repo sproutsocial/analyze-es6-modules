@@ -6,68 +6,87 @@ export default class Module {
 		this.exports = [];
 	}
 
-	addNamedImport(name, sourceModulePath) {
+	addNamedImport({ exportName, sourcePath, rawSourcePath, lineNumber }) {
 		this.imports.push({
 			type: 'named',
-			exportingModule: sourceModulePath,
-			exportName: name
+			exportName,
+			exportingModule: {
+				raw: rawSourcePath,
+				resolved: sourcePath
+			},
+			lineNumber
 		});
 	}
 
-	addDefaultImport(sourceModulePath) {
+	addDefaultImport({ sourcePath, rawSourcePath, lineNumber }) {
 		this.imports.push({
 			type: 'default',
-			exportingModule: sourceModulePath
+			exportingModule: {
+				raw: rawSourcePath,
+				resolved: sourcePath
+			},
+			lineNumber
 		});
 	}
 
-	addBatchImport(sourceModulePath) {
+	addBatchImport({ sourcePath, rawSourcePath, lineNumber }) {
 		this.imports.push({
 			type: 'batch',
-			exportingModule: sourceModulePath
+			exportingModule: {
+				raw: rawSourcePath,
+				resolved: sourcePath
+			},
+			lineNumber
 		});
 	}
 
-	addSideEffectImport(sourceModulePath) {
+	addSideEffectImport({ sourcePath, rawSourcePath, lineNumber }) {
 		this.imports.push({
 			type: 'sideEffect',
-			exportingModule: sourceModulePath
+			exportingModule: {
+				raw: rawSourcePath,
+				resolved: sourcePath
+			},
+			lineNumber
 		});
 	}
 
-	addBatchExport(sourceModulePath) {
+	addBatchExport({ sourcePath, rawSourcePath, lineNumber }) {
 		this.exports.push({
 			type: 'batch',
-			exportingModule: sourceModulePath
+			exportingModule: {
+				raw: rawSourcePath,
+				resolved: sourcePath
+			},
+			lineNumber
 		});
 	}
 
-	addReExport(exportedName, importedName, sourceModulePath) {
-		this.addNamedImport(importedName, sourceModulePath);
+	addReExport({ exportedName, importedName, sourcePath, rawSourcePath, lineNumber }) {
+		this.addNamedImport({ exportName: importedName, sourcePath, rawSourcePath });
 
 		if (exportedName === 'default') {
-			this.addDefaultExport();
+			this.addDefaultExport({ lineNumber });
 		} else {
-			this.addNamedExport(exportedName);
+			this.addNamedExport({ name: exportedName, lineNumber });
 		}
 	}
 
-	addNamedExport(name) {
+	addNamedExport({ exportName, lineNumber }) {
 		this.exports.push({
 			type: 'named',
-			exportName: name
+			exportName,
+			lineNumber
 		});
 	}
 
-	addDefaultExport() {
+	addDefaultExport({ lineNumber }) {
 		this.exports.push({
-			type: 'default'
+			type: 'default',
+			lineNumber
 		});
 	}
 
-	/**
-	 * For debugging purposes
-	 */
 	toJSON() {
 		return {
 			path: this.path,

@@ -11,28 +11,39 @@
 		}
 	},
 	"result": {
-		"errors": [
+		"issues": [
 			{
 				"type": "badImport",
 				"importingModule": "index",
-				"exportingModule": "jQuery",
+				"exportingModule": {
+					"raw": "jQuery",
+					"resolved": "jQuery"
+				},
 				"exportType": "named",
-				"exportName": "each"
+				"exportName": "each",
+				"lineNumber": 1
 			},
 			{
 				"type": "badImport",
 				"importingModule": "index",
-				"exportingModule": "lodash",
-				"exportType": "default"
+				"exportingModule": {
+					"raw": "lodash",
+					"resolved": "lodash"
+				},
+				"exportType": "default",
+				"lineNumber": 3
 			},
 			{
 				"type": "badImport",
 				"importingModule": "index",
-				"exportingModule": "lodash",
+				"exportingModule": {
+					"raw": "lodash",
+					"resolved": "lodash"
+				},
 				"exportType": "named",
-				"exportName": "reduce"
+				"exportName": "reduce",
+				"lineNumber": 4
 			}
-		],
-		"warnings": []
+		]
 	}
 }

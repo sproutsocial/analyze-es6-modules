@@ -3,12 +3,16 @@
 		"sources": ["**/*.js"]
 	},
 	"result": {
-		"errors": [
+		"issues": [
 			{
 				"type": "badImport",
 				"importingModule": "index",
-				"exportingModule": "config",
-				"exportType": "default"
+				"exportingModule": {
+					"raw": "./config",
+					"resolved": "config"
+				},
+				"exportType": "default",
+				"lineNumber": 1
 			}
 		]
 	}

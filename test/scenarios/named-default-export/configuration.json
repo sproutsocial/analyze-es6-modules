@@ -9,7 +9,8 @@
 				"imports": [],
 				"exports": [
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 3
 					}
 				]
 			}

@@ -9,13 +9,18 @@
 				"imports": [
 					{
 						"type": "named",
-						"exportingModule": "config",
-						"exportName": "timeout"
+						"exportingModule": {
+							"raw": "./config",
+							"resolved": "config"
+						},
+						"exportName": "timeout",
+						"lineNumber": 1
 					}
 				],
 				"exports": [
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 3
 					}
 				]
 			},
@@ -25,11 +30,13 @@
 				"exports": [
 					{
 						"type": "named",
-						"exportName": "path"
+						"exportName": "path",
+						"lineNumber": 1
 					},
 					{
 						"type": "named",
-						"exportName": "timeout"
+						"exportName": "timeout",
+						"lineNumber": 2
 					}
 				]
 			},
@@ -38,21 +45,34 @@
 				"imports": [
 					{
 						"type": "default",
-						"exportingModule": "class"
+						"exportingModule": {
+							"raw": "./class",
+							"resolved": "class"
+						},
+						"lineNumber": 1
 					},
 					{
 						"type": "batch",
-						"exportingModule": "config"
+						"exportingModule": {
+							"raw": "./config",
+							"resolved": "config"
+						},
+						"lineNumber": 3
 					},
 					{
 						"type": "named",
-						"exportingModule": "config",
-						"exportName": "path"
+						"exportingModule": {
+							"raw": "./config",
+							"resolved": "config"
+						},
+						"exportName": "path",
+						"lineNumber": 4
 					}
 				],
 				"exports": [
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 6
 					}
 				]
 			},
@@ -62,10 +82,15 @@
 				"exports": [
 					{
 						"type": "batch",
-						"exportingModule": "config"
+						"exportingModule": {
+							"raw": "./config",
+							"resolved": "config"
+						},
+						"lineNumber": 1
 					},
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 3
 					}
 				]
 			}

@@ -9,7 +9,8 @@
 				"imports": [],
 				"exports": [
 					{
-						"type": "default"
+						"type": "default",
+						"lineNumber": 1
 					}
 				]
 			},
@@ -18,13 +19,16 @@
 				"imports": [
 					{
 						"type": "default",
-						"exportingModule": "class"
+						"exportingModule": {
+							"raw": "./class",
+							"resolved": "class"
+						},
+						"lineNumber": 1
 					}
 				],
 				"exports": []
 			}
 		],
-		"errors": [],
-		"warnings": []
+		"issues": []
 	}
 }

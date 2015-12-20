@@ -1,28 +1,25 @@
 export function analyzeModules({ modules, predefinedModules }) {
-	var errors = [];
+	let issues = [];
 
-	errors = errors.concat(findBadModuleReferences({ modules, predefinedModules }));
-	errors = errors.concat(findBadImports({ modules, predefinedModules }));
+	issues = issues.concat(findBadModuleReferences({ modules, predefinedModules }));
+	issues = issues.concat(findBadImports({ modules, predefinedModules }));
 
-	return {
-		modules,
-		errors: errors,
-		warnings: []
-	};
+	return { modules, issues };
 }
 
 function findBadModuleReferences({ modules, predefinedModules }) {
 	const modulePaths = modules.map((module) => module.path);
 
-	return modules.reduce((errors, module) => {
+	return modules.reduce((issues, module) => {
 		module.imports.forEach((moduleImport) => {
-			const source = moduleImport.exportingModule;
+			const source = moduleImport.exportingModule.resolved;
 
 			if (modulePaths.indexOf(source) < 0 && !predefinedModules[source]) {
-				errors.push({
+				issues.push({
 					type: 'missingModule',
 					importingModule: module.path,
-					exportingModule: source
+					exportingModule: moduleImport.exportingModule,
+					lineNumber: moduleImport.lineNumber
 				});
 			}
 		});
@@ -32,32 +29,33 @@ function findBadModuleReferences({ modules, predefinedModules }) {
 				return;
 			}
 
-			const source = moduleExport.exportingModule;
+			const source = moduleExport.exportingModule.resolved;
 
 			if (modulePaths.indexOf(source) < 0  && !predefinedModules[source]) {
-				errors.push({
+				issues.push({
 					type: 'missingModule',
 					importingModule: module.path,
-					exportingModule: source
+					exportingModule: moduleExport.exportingModule,
+					lineNumber: moduleExport.lineNumber
 				});
 			}
 		});
 
-		return errors;
+		return issues;
 	}, []);
 }
 
 function findBadImports({ modules,  predefinedModules }) {
 	const exportMap = buildExportMap({ modules,  predefinedModules });
 
-	return modules.reduce((errors, module) => {
-		return module.imports.reduce((errors, moduleImport) => {
-			const predefined = predefinedModules[moduleImport.exportingModule];
-			const moduleExportMap = exportMap[moduleImport.exportingModule];
+	return modules.reduce((issues, module) => {
+		return module.imports.reduce((issues, moduleImport) => {
+			const predefined = predefinedModules[moduleImport.exportingModule.resolved];
+			const moduleExportMap = exportMap[moduleImport.exportingModule.resolved];
 
 			// Module not found, error is reported elsewhere
 			if (!predefined && !moduleExportMap) {
-				return errors;
+				return issues;
 			}
 
 			if (predefined) {
@@ -67,11 +65,12 @@ function findBadImports({ modules,  predefinedModules }) {
 							break;
 						}
 
-						errors.push({
+						issues.push({
 							type: 'badImport',
 							importingModule: module.path,
 							exportingModule: moduleImport.exportingModule,
-							exportType: 'default'
+							exportType: 'default',
+							lineNumber: moduleImport.lineNumber
 						});
 						break;
 					case 'named':
@@ -83,12 +82,13 @@ function findBadImports({ modules,  predefinedModules }) {
 							break;
 						}
 
-						errors.push({
+						issues.push({
 							type: 'badImport',
 							importingModule: module.path,
 							exportingModule: moduleImport.exportingModule,
 							exportType: 'named',
-							exportName: moduleImport.exportName
+							exportName: moduleImport.exportName,
+							lineNumber: moduleImport.lineNumber
 						});
 						break;
 				}
@@ -96,22 +96,24 @@ function findBadImports({ modules,  predefinedModules }) {
 				switch (moduleImport.type) {
 					case 'default':
 						if (!moduleExportMap['default']) {
-							errors.push({
+							issues.push({
 								type: 'badImport',
 								importingModule: module.path,
 								exportingModule: moduleImport.exportingModule,
-								exportType: 'default'
+								exportType: 'default',
+								lineNumber: moduleImport.lineNumber
 							});
 						}
 						break;
 					case 'named':
 						if (moduleExportMap.named.indexOf(moduleImport.exportName) < 0) {
-							errors.push({
+							issues.push({
 								type: 'badImport',
 								importingModule: module.path,
 								exportingModule: moduleImport.exportingModule,
 								exportType: 'named',
-								exportName: moduleImport.exportName
+								exportName: moduleImport.exportName,
+								lineNumber: moduleImport.lineNumber
 							});
 						}
 
@@ -119,8 +121,8 @@ function findBadImports({ modules,  predefinedModules }) {
 				}
 			}
 
-			return errors;
-		}, errors);
+			return issues;
+		}, issues);
 	}, []);
 }
 
@@ -141,7 +143,7 @@ function buildExportMap({ modules, predefinedModules }) {
 					exports.named.push(moduleExport.exportName);
 					break;
 				case 'batch':
-					exports.batch.push(moduleExport.exportingModule);
+					exports.batch.push(moduleExport.exportingModule.resolved);
 					break;
 			}
 		});

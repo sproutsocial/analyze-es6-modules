@@ -3,8 +3,7 @@
 		"sources": ["**/*.js"]
 	},
 	"result": {
-		"errors": [],
-		"warnings": [],
+		"issues": [],
 		"modules": [
 			{
 				"path": "config",
@@ -12,7 +11,8 @@
 				"exports": [
 					{
 						"type": "named",
-						"exportName": "path"
+						"exportName": "path",
+						"lineNumber": 1
 					}
 				]
 			},
@@ -21,8 +21,12 @@
 				"imports": [
 					{
 						"type": "named",
-						"exportingModule": "tasks",
-						"exportName": "path"
+						"exportingModule": {
+							"raw": "./tasks",
+							"resolved": "tasks"
+						},
+						"exportName": "path",
+						"lineNumber": 1
 					}
 				],
 				"exports": []
@@ -33,7 +37,11 @@
 				"exports": [
 					{
 						"type": "batch",
-						"exportingModule": "config"
+						"exportingModule": {
+							"raw": "./config",
+							"resolved": "config"
+						},
+						"lineNumber": 1
 					}
 				]
 			}
