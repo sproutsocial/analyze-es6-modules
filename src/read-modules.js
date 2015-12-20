@@ -7,8 +7,9 @@ const babel = require('babel-core');
 const Promise = require('bluebird');
 
 class ModuleParser {
-	constructor({ cwd, filePath, ast }) {
+	constructor({ cwd, aliases, filePath, ast }) {
 		this.cwd = cwd;
+		this.aliases = aliases;
 		this.filePath = filePath;
 		this.ast = ast;
 	}
@@ -100,27 +101,53 @@ class ModuleParser {
 	}
 
 	resolveImportModulePath(importingModulePath, exportingModuleRelativePath) {
-		// TODO: Check aliases
+		// TODO: Preserve original value for reporting
 
-		if (exportingModuleRelativePath[0] !== '.') {
-			return exportingModuleRelativePath;
+		if (exportingModuleRelativePath[0] === '.') {
+			const fullImportModulePath = pathModule.join(this.cwd, importingModulePath);
+			const importingModuleDirectory = fullImportModulePath.replace(/\/[^/]+$/g, '');
+			const exportingModulePath = pathModule.resolve(importingModuleDirectory, exportingModuleRelativePath);
+			// Get the relative path and remove the leading dot and slash
+			return pathModule.relative(this.cwd, exportingModulePath).replace(/^\.\//g, '');
 		}
 
-		const fullImportModulePath = pathModule.join(this.cwd, importingModulePath);
-		const importingModuleDirectory = fullImportModulePath.replace(/\/[^/]+$/g, '');
-		const exportingModulePath = pathModule.resolve(importingModuleDirectory, exportingModuleRelativePath);
-		// Get the relative path and remove the leading dot and slash
-		return pathModule.relative(this.cwd, exportingModulePath).replace(/^\.\//g, '');
+		const aliased = this.applyAliases(exportingModuleRelativePath);
+		if (exportingModuleRelativePath !== aliased) {
+			return aliased;
+		}
+
+		return exportingModuleRelativePath;
 	}
+
+	applyAliases(modulePath) {
+		if (this.aliases.module[modulePath]) {
+			return this.aliases.module[modulePath];
+		}
+
+		for (const prefix in this.aliases.path) {
+			if (this.aliases.path.hasOwnProperty(prefix)) {
+				if (modulePath.indexOf(prefix) === 0) {
+					const rest = modulePath.slice(prefix.length);
+					const fullPath = pathModule.join(this.cwd, this.aliases.path[prefix], rest);
+					const absolutePath = pathModule.resolve(fullPath);
+
+					return pathModule.relative(this.cwd, absolutePath);
+				}
+			}
+		}
+
+		return modulePath;
+	}
+
 }
 
-export function readModules({ cwd, sources, fileReader }) {
+export function readModules({ cwd, sources, aliases, fileReader }) {
 	return expandFilePatterns(cwd, sources).then((filePaths) => {
 		const modulePromises = filePaths.map((filePath) => {
 			return fileReader(filePath).then((fileContents) => {
 				const ast = babel.transform(fileContents).ast;
 
-				const moduleParser = new ModuleParser({ cwd, filePath, ast });
+				const moduleParser = new ModuleParser({ cwd, filePath, aliases, ast });
 				return moduleParser.parseModule();
 			});
 		});

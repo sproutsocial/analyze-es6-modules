@@ -1,0 +1,63 @@
+{
+	"options": {
+		"sources": ["**/*.js"],
+		"predefined": {
+			"moment-timezone": true
+		},
+		"aliases": {
+			"module": {
+				"moment": "moment-timezone"
+			},
+			"path": {
+				"util/": "./misc/util",
+				"app/": "."
+			}
+		}
+	},
+	"result": {
+		"errors": [],
+		"warnings": [],
+		"modules": [
+			{
+				"path": "config",
+				"imports": [],
+				"exports": [
+					{
+						"type": "named",
+						"exportName": "path"
+					}
+				]
+			},
+			{
+				"path": "index",
+				"exports": [],
+				"imports": [
+					{
+						"type": "default",
+						"exportingModule": "moment-timezone"
+					},
+					{
+						"type": "named",
+						"exportingModule": "misc/util/time",
+						"exportName": "convert"
+					},
+					{
+						"type": "named",
+						"exportingModule": "config",
+						"exportName": "path"
+					}
+				]
+			},
+			{
+				"path": "misc/util/time",
+				"imports": [],
+				"exports": [
+					{
+						"type": "named",
+						"exportName": "convert"
+					}
+				]
+			}
+		]
+	}
+}

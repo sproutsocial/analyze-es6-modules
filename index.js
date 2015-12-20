@@ -7,8 +7,12 @@ module.exports = function(options) {
 	var readModulesOptions = {
 		cwd: cwd,
 		sources: options.sources,
+		aliases: options.aliases || {},
 		fileReader: options.fileReader || require('./dist/utility').readFileFromFileSystem
 	};
+
+	readModulesOptions.aliases.module = readModulesOptions.aliases.module || {};
+	readModulesOptions.aliases.path = readModulesOptions.aliases.path || {};
 
 	var readModules = require('./dist/read-modules').readModules;
 
