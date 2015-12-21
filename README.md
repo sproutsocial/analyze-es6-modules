@@ -45,7 +45,7 @@ The exported function takes an object of configuration options that are describe
      "plugins": [require('babel-plugin-syntax-jsx'), require('babel-plugin-syntax-flow')]
  }
  ```
-- `predefinedModules`: This is an object containing modules that can be used but do not exist within your project directly. This is where you can include module descriptions for things like third-party libraries.
+- `predefined`: This is an object containing modules that can be used but do not exist within your project directly. This is where you can include module descriptions for things like third-party libraries.
 
  ```js
  {
