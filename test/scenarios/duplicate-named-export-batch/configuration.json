@@ -1,0 +1,15 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"issues": [
+			{
+				"type": "duplicateExport",
+				"exportingModule": "index",
+				"exportType": "named",
+				"exportName": "pi"
+			}
+		]
+	}
+}

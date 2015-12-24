@@ -1,8 +1,13 @@
-export function analyzeModules({ modules, predefinedModules }) {
-	let issues = [];
+import StringMultiSet from './StringMultiSet';
 
-	issues = issues.concat(findBadModuleReferences({ modules, predefinedModules }));
-	issues = issues.concat(findBadImports({ modules, predefinedModules }));
+export function analyzeModules({ modules, predefinedModules }) {
+	const exportMap = buildExportMap({ modules, predefinedModules });
+
+	const issues = [].
+		concat(findBadModuleReferences({ modules, predefinedModules })).
+		concat(findBadImports({ modules, predefinedModules, exportMap })).
+		concat(findDuplicateExports({ modules, exportMap })).
+		concat(findUnusedExports({ modules, exportMap }));
 
 	return { modules, issues };
 }
@@ -45,9 +50,7 @@ function findBadModuleReferences({ modules, predefinedModules }) {
 	}, []);
 }
 
-function findBadImports({ modules,  predefinedModules }) {
-	const exportMap = buildExportMap({ modules,  predefinedModules });
-
+function findBadImports({ modules,  predefinedModules, exportMap }) {
 	return modules.reduce((issues, module) => {
 		return module.imports.reduce((issues, moduleImport) => {
 			const predefined = predefinedModules[moduleImport.exportingModule.resolved];
@@ -126,6 +129,34 @@ function findBadImports({ modules,  predefinedModules }) {
 	}, []);
 }
 
+function findDuplicateExports({ modules, exportMap }) {
+	return modules.reduce((issues, module) => {
+		// TODO: Duplicate default exports?
+		const namedExports = exportMap[module.path].named;
+		const namedSet = new StringMultiSet(namedExports);
+
+		if (namedExports.length !== namedSet.size) {
+			namedSet.items.forEach((name) => {
+				if (namedSet.count(name) > 1) {
+					// TODO: Line numbers
+					issues.push({
+						type: 'duplicateExport',
+						exportingModule: module.path,
+						exportType: 'named',
+						exportName: name
+					});
+				}
+			});
+		}
+
+		return issues;
+	}, []);
+}
+
+function findUnusedExports({ modules, exportMap }) {
+	return [];
+}
+
 function buildExportMap({ modules, predefinedModules }) {
 	const exportMap = modules.reduce((exportMap, module) => {
 		const exports = {
@@ -183,8 +214,4 @@ function resolveAllNamedImports(predefinedModules, exportMap, path, stack = []) 
 		const newStack = stack.concat([path]);
 		return namedImports.concat(resolveAllNamedImports(predefinedModules, exportMap, batchPath, newStack));
 	}, exportMap[path].named);
-}
-
-function findUnusedExports({ modules }) {
-
 }
