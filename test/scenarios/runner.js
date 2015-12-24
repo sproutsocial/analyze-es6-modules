@@ -32,9 +32,20 @@ function runScenario(scenarioName) {
 			console.info('Scenario passed: ' + scenarioName);
 		}
 	}, function(error) {
-		console.error('Scenario failure: ' + scenarioName);
-		console.error(error && error.stack);
-		process.exit(-2);
+		if (configuration.errorMessages) {
+			if (!compareErrors(error, configuration.errorMessages)) {
+				console.error('Scenario failure: ' + scenarioName);
+				console.error('Expected errors: ' + configuration.errorMessages.join(', '));
+				console.error('Actual error: ' + error);
+				process.exit(-1);
+			} else {
+				console.info('Scenario passed: ' + scenarioName);
+			}
+		} else {
+			console.error('Scenario failure: ' + scenarioName);
+			console.error(error && error.stack);
+			process.exit(-2);
+		}
 	});
 }
 
@@ -65,6 +76,20 @@ function compareResultAndExpected(actual, expected) {
 
 	if (expected.issues && !_.isEqual(actual.issues, expected.issues)) {
 		return false;
+	}
+
+	return true;
+}
+
+function compareErrors(actual, expected) {
+	if (typeof actual !== 'string' || !Array.isArray(expected)) {
+		return false;
+	}
+
+	for (var i = 0; i < expected.length; ++i) {
+		if (actual.toLocaleLowerCase().indexOf(expected[i].toLocaleLowerCase()) < 0) {
+			return false;
+		}
 	}
 
 	return true;

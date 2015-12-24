@@ -178,13 +178,21 @@ export function readModules({ cwd, sources, aliases, fileReader, babel: userBabe
 	return expandFilePatterns(cwd, sources).then((filePaths) => {
 		const modulePromises = filePaths.map((filePath) => {
 			return fileReader(filePath).then((fileContents) => {
-				const ast = babel.transform(fileContents, babelOptions).ast;
+				try {
+					const ast = babel.transform(fileContents, babelOptions).ast;
 
-				const moduleParser = new ModuleParser({ cwd, filePath, aliases, ast });
-				return moduleParser.parseModule();
+					const moduleParser = new ModuleParser({ cwd, filePath, aliases, ast });
+					return moduleParser.parseModule();
+				} catch (error) {
+					throw generateParsingErrorMessage(filePath, error);
+				}
 			});
 		});
 
 		return Promise.all(modulePromises);
 	});
+}
+
+function generateParsingErrorMessage(filePath, error) {
+	return `Parsing error: ${filePath}\n${error ? (error.stack || error.message) : ''}`;
 }
