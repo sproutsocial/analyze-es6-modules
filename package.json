@@ -16,7 +16,9 @@
 		"url": "https://github.com/sproutsocial/es6-analyze-modules"
 	},
 	"scripts": {
-		"prepublish": "babel src --out-dir dist"
+		"prepublish": "babel src --out-dir dist",
+		"pretest": "babel src --out-dir dist",
+		"test": "node ./test/scenarios/runner.js"
 	},
 	"dependencies": {
 		"babel-core": "6.2.1",
