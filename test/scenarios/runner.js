@@ -55,7 +55,7 @@ function normalizeResult(result) {
 	}
 
 	if (result.issues) {
-		result.errors = _.sortByAll(result.errors, ['type', 'importingModule', 'exportingModule.resolved', 'line']);
+		result.issues = _.sortByAll(result.issues, ['type', 'importingModule', 'exportingModule.resolved', 'line']);
 	}
 
 	return JSON.parse(JSON.stringify(result));
