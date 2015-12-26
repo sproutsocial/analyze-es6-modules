@@ -1,13 +1,13 @@
-# es6-analyze-modules [![Build Status](https://travis-ci.org/sproutsocial/es6-analyze-modules.svg?branch=master)](https://travis-ci.org/sproutsocial/es6-analyze-modules)
+# analyze-es6-modules [![Build Status](https://travis-ci.org/sproutsocial/analyze-es6-modules.svg?branch=master)](https://travis-ci.org/sproutsocial/analyze-es6-modules)
 
-es6-analyze-modules is a program that reads and statically analyzes ES6 module statements in your Javascript project. It builds a list of all modules in your project, including their imports and exports, then determines if those imports and exports align. It can warn about mistakes such as bad module references or bad imports, and even warn about unused exports. The task is highly configurable so that it can adapt to a wide range of projects.
+analyze-es6-modules is a program that reads and statically analyzes ES6 module statements in your Javascript project. It builds a list of all modules in your project, including their imports and exports, then determines if those imports and exports align. It can warn about mistakes such as bad module references or bad imports, and even warn about unused exports. The task is highly configurable so that it can adapt to a wide range of projects.
  
 ## Usage
  
 This module exports only a single function that returns an A+ promise, so it can be used like so:
 
 ```js
-var analyzeModules = require('es6-analyze-modules');
+var analyzeModules = require('analyze-es6-modules');
 
 analyzeModules(configuration).then(resolvedHandler, rejectedHandler);
 ```

@@ -1,19 +1,16 @@
 {
-	"name": "es6-analyze-modules",
+	"name": "analyze-es6-modules",
 	"version": "0.5.0",
 	"description": "Performs static analysis of ES6 modules in your codebase.",
-	"keywords": "es6 modules",
+	"keywords": ["es6", "modules", "es6 modules"],
 	"license": "MIT",
 	"author": {
 		"name": "Gordon Kristan"
 	},
-	"files": [
-
-	],
 	"main": "index.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sproutsocial/es6-analyze-modules"
+		"url": "https://github.com/sproutsocial/analyze-es6-modules"
 	},
 	"scripts": {
 		"prepublish": "babel src --out-dir dist",
