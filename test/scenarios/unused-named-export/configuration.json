@@ -1,0 +1,13 @@
+{
+	"result": {
+		"issues": [
+			{
+				"type": "unusedExport",
+				"exportingModule": "null",
+				"exportType": "named",
+				"exportName": "named",
+				"lineNumber": 0
+			}
+		]
+	}
+}

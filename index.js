@@ -23,7 +23,9 @@ module.exports = function(options) {
 		const analyzeOptions = {
 			cwd: cwd,
 			modules: modules,
-			predefinedModules: options.predefined || {}
+			predefinedModules: options.predefined || {},
+			// TODO: Report when these aren't used
+			ignoreUnused: options.ignoreUnused || {}
 		};
 
 		return analyzeModules(analyzeOptions);

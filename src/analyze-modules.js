@@ -1,13 +1,14 @@
 import StringMultiSet from './StringMultiSet';
 
-export function analyzeModules({ modules, predefinedModules }) {
+export function analyzeModules({ modules, predefinedModules, ignoreUnused }) {
 	const exportMap = buildExportMap({ modules, predefinedModules });
 
 	const issues = [].
 		concat(findBadModuleReferences({ modules, predefinedModules })).
 		concat(findBadImports({ modules, predefinedModules, exportMap })).
 		concat(findDuplicateExports({ modules, exportMap })).
-		concat(findUnusedExports({ modules, exportMap }));
+		concat(findUnusedModules({ modules, ignoreUnused })).
+		concat(findUnusedExports({ modules, ignoreUnused }));
 
 	return { modules, issues };
 }
@@ -138,12 +139,12 @@ function findDuplicateExports({ modules, exportMap }) {
 		if (namedExports.length !== namedSet.size) {
 			namedSet.items.forEach((name) => {
 				if (namedSet.count(name) > 1) {
-					// TODO: Line numbers
 					issues.push({
 						type: 'duplicateExport',
 						exportingModule: module.path,
 						exportType: 'named',
-						exportName: name
+						exportName: name,
+						lineNumber: 0 // TODO
 					});
 				}
 			});
@@ -153,8 +154,124 @@ function findDuplicateExports({ modules, exportMap }) {
 	}, []);
 }
 
-function findUnusedExports({ modules, exportMap }) {
-	return [];
+function findUnusedModules({ modules, ignoreUnused }) {
+	const importMap = {};
+
+	modules.forEach((module) => {
+		module.imports.forEach((moduleImport) => {
+			importMap[moduleImport.exportingModule.resolved] = true;
+		});
+
+		module.exports.forEach((moduleExport) => {
+			if (moduleExport.type === 'batch') {
+				importMap[moduleExport.exportingModule.resolved] = true;
+			}
+		});
+	});
+
+	return modules.reduce((issues, module) => {
+		if (!importMap[module.path] && ignoreUnused[module.path] !== true) {
+			issues.push({
+				type: 'unusedModule',
+				module: module.path
+			});
+		}
+
+		return issues;
+	}, []);
+}
+
+function findUnusedExports({ modules, ignoreUnused }) {
+	const importMap = modules.reduce((importMap, module) => {
+		importMap[module.path] = {
+			batch: false,
+			'default': false,
+			named: []
+		};
+
+		return importMap;
+	}, {});
+
+	modules.forEach((module) => {
+		module.imports.forEach((moduleImport) => {
+			// Either a predefined or non-existent module.
+			if (!importMap[moduleImport.exportingModule.resolved]) {
+				return;
+			}
+
+			switch (moduleImport.type) {
+				case 'batch':
+					importMap[moduleImport.exportingModule.resolved].batch = true;
+					break;
+				case 'default':
+					importMap[moduleImport.exportingModule.resolved]['default'] = true;
+					break;
+				case 'named':
+					importMap[moduleImport.exportingModule.resolved].named.push(moduleImport.exportName);
+					break;
+				case 'sideEffect':
+					// This only checks for unused exports. Unused modules are checked elsewhere.
+					break;
+			}
+		});
+
+		module.exports.forEach((moduleExport) => {
+			if (moduleExport.type === 'batch') {
+				// Make sure it's not a predefined or non-existent module.
+				if (importMap[moduleExport.exportingModule.resolved]) {
+					importMap[moduleExport.exportingModule.resolved].batch = true;
+				}
+			}
+		});
+	});
+
+	return modules.reduce((issues, module) => {
+		module.exports.forEach((moduleExport) => {
+			if (importMap[module.path].batch) {
+				return;
+			}
+
+			const unused = ignoreUnused[module.path];
+
+			if (unused === true) {
+				return;
+			}
+
+			switch (moduleExport.type) {
+				case 'default':
+					if (unused && unused['default']) {
+						break;
+					}
+
+					if (!importMap[module.path]['default']) {
+						issues.push({
+							type: 'unusedExport',
+							exportingModule: module.path,
+							exportType: 'default',
+							lineNumber: 0 // TODO
+						});
+					}
+					break;
+				case 'named':
+					if (unused && unused.named && unused.named.indexOf(moduleExport.exportName) >= 0) {
+						break;
+					}
+
+					if (importMap[module.path].named.indexOf(moduleExport.exportName) < 0) {
+						issues.push({
+							type: 'unusedExport',
+							exportingModule: module.path,
+							exportType: 'named',
+							exportName: moduleExport.exportName,
+							lineNumber: 0 // TODO
+						});
+					}
+					break;
+			}
+		});
+
+		return issues;
+	}, []);
 }
 
 function buildExportMap({ modules, predefinedModules }) {

@@ -8,7 +8,8 @@
 				"type": "duplicateExport",
 				"exportingModule": "index",
 				"exportType": "named",
-				"exportName": "pi"
+				"exportName": "pi",
+				"lineNumber": 0
 			}
 		]
 	}

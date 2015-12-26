@@ -40,20 +40,54 @@ interface ModuleExport {
 }
 
 interface Issue {
-	// One of: missingModule, badImport
+	// One of: missingModule, badImport, duplicateExport, unusedModule, unusedExport
 	type: String;
-	// The module the issue occurred in
+}
+
+interface MissingModuleIssue extends Issue {
 	importingModule: String;
-	exportingModule?: {
+	exportingModule: {
 		// Raw value seen in source
 		raw: String;
 		// Resolved value after aliases
 		resolved: String;
 	};
-	// Only for `badImport` type
-	// One of: named, default
+	lineNumber: Number;
+}
+
+interface BadImportIssue extends Issue {
+	importingModule: String;
+	exportingModule: {
+		// Raw value seen in source
+		raw: String;
+		// Resolved value after aliases
+		resolved: String;
+	};
+	// One of named, default
 	exportType: String;
-	// Only for `badImport` type with `named` exportType
-	exportName: String;
+	// Only for named exports
+	exportName?: String;
+	lineNumber: Number;
+}
+
+interface DuplicateExportIssue extends Issue {
+	exportingModule: String;
+	// One of named, default
+	exportType: String;
+	// Only for named exports
+	exportName?: String;
+	lineNumber: Number;
+}
+
+interface UnusedModuleIssue extends Issue {
+	module: String;
+}
+
+interface UnusedExportIssue extends Issue {
+	exportingModule: String;
+	// One of named, default
+	exportType: String;
+	// Only for named exports
+	exportName?: String;
 	lineNumber: Number;
 }

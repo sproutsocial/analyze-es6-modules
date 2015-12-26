@@ -17,8 +17,7 @@ function runScenario(scenarioName) {
 	var configurationPath = path.join(__dirname, scenarioName, 'configuration.json');
 	var configuration = JSON.parse(fs.readFileSync(configurationPath, 'utf8'));
 
-	var options = configuration.options;
-	options.cwd = path.join(__dirname, scenarioName);
+	var options = normalizeOptions(configuration.options, scenarioName);
 
 	analyzeModules(options).then(function(result) {
 		var expected = normalizeResult(configuration.result);
@@ -47,6 +46,16 @@ function runScenario(scenarioName) {
 			process.exit(-2);
 		}
 	});
+}
+
+function normalizeOptions(options, scenarioName) {
+	options = options || {};
+	options.cwd = path.join(__dirname, scenarioName);
+	options.sources = options.sources || ["**/*.js"];
+	options.ignoreUnused = options.ignoreUnused || {};
+	options.ignoreUnused['index'] = true;
+
+	return options;
 }
 
 function normalizeResult(result) {

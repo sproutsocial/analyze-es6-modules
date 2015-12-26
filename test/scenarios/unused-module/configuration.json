@@ -1,0 +1,13 @@
+{
+	"options": {
+		"sources": ["**/*.js"]
+	},
+	"result": {
+		"issues": [
+			{
+				"type": "unusedModule",
+				"module": "unused"
+			}
+		]
+	}
+}

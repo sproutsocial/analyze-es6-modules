@@ -1,0 +1,15 @@
+{
+	"options": {
+		"sources": ["**/*.js"],
+		"ignoreUnused": {
+			"unused": true,
+			"math": {
+				"default": true,
+				"named": ["pi"]
+			}
+		}
+	},
+	"result": {
+		"issues": []
+	}
+}
