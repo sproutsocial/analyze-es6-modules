@@ -63,6 +63,7 @@ The exported function takes an object of configuration options that are describe
  }
  ```
 - `ignoreUnused`: This is an object containing rules for ignoring unused warnings for modules and exports.
+
  ```js
  {
      // Using `true` will ignore any unused warnings from that module
