@@ -82,11 +82,11 @@ The exported function takes an object of configuration options that are describe
  
 ### Output
 
-The output format is still somewhat in flux, but should remain mostly backwards compatible. You can find a description of it using Typescript interfaces [here](doc/output-types.ast). For more real-world examples, check out the test scenarios [here](test/scenarios). The output format was designed to be flexible enough to report the issues in a project-specific manner.
+The output format is still somewhat in flux, but should remain mostly backwards compatible. You can find a description of it using Typescript interfaces [here](doc/output-types.d.ts). For more real-world examples, check out the test scenarios [here](test/scenarios). The output format was designed to be flexible enough to report the issues in a project-specific manner.
  
 ### Plugins
 
-Grunt plugin coming soon.
+A Grunt plugin can be found [here](https://github.com/sproutsocial/grunt-analyze-es6-modules).
 
 ## Development
 
