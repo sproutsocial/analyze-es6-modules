@@ -9,7 +9,11 @@ module.exports = function(options) {
 		babel: options.babel || {},
 		sources: options.sources,
 		aliases: options.aliases || {},
-		fileReader: options.fileReader || require('./dist/utility').readFileFromFileSystem
+		fileReader: options.fileReader || require('./dist/utility').readFileFromFileSystem,
+		// TODO: Does this deprecate aliases?
+		resolveModulePath: options.resolveModulePath || function() {
+			return undefined;
+		}
 	};
 
 	readModulesOptions.aliases.module = readModulesOptions.aliases.module || {};

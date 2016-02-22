@@ -14,8 +14,7 @@ if (process.argv[2] && process.argv[2][0] !== '-') {
 }
 
 function runScenario(scenarioName) {
-	var configurationPath = path.join(__dirname, scenarioName, 'configuration.json');
-	var configuration = JSON.parse(fs.readFileSync(configurationPath, 'utf8'));
+	var configuration = getConfiguration(scenarioName);
 
 	var options = normalizeOptions(configuration.options, scenarioName);
 
@@ -42,16 +41,30 @@ function runScenario(scenarioName) {
 			}
 		} else {
 			console.error('Scenario failure: ' + scenarioName);
-			console.error(error && error.stack);
+			console.error(error);
 			process.exit(-2);
 		}
 	});
 }
 
+function getConfiguration(scenarioName) {
+	try {
+		var jsonPath = path.join(__dirname, scenarioName, 'configuration.json');
+		return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+	} catch (e) {
+		try {
+			var jsPath = path.join(__dirname, scenarioName, 'configuration.js');
+			return _.cloneDeep(require(jsPath));
+		} catch (e) {
+			throw new Error('Configuration not found for `' + scenarioName + '` scenario.');
+		}
+	}
+}
+
 function normalizeOptions(options, scenarioName) {
 	options = options || {};
 	options.cwd = path.join(__dirname, scenarioName);
-	options.sources = options.sources || ["**/*.js"];
+	options.sources = options.sources || ['!configuration.js', '**/*.js'];
 	options.ignoreUnused = options.ignoreUnused || {};
 	options.ignoreUnused['index'] = true;
 

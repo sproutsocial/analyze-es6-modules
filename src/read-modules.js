@@ -7,10 +7,11 @@ const babel = require('babel-core');
 const Promise = require('bluebird');
 
 class ModuleParser {
-	constructor({ cwd, aliases, filePath, ast }) {
+	constructor({ cwd, aliases, filePath, resolveModulePath, ast }) {
 		this.cwd = cwd;
 		this.aliases = aliases;
 		this.filePath = filePath;
+		this.resolveModulePath = resolveModulePath;
 		this.ast = ast;
 	}
 
@@ -132,6 +133,12 @@ class ModuleParser {
 	}
 
 	resolveImportModulePath(importingModulePath, exportingModuleRelativePath) {
+		const resolveOptions = { cwd: this.cwd, path: exportingModuleRelativePath, importingModulePath };
+		const userResolvedPath = this.resolveModulePath(resolveOptions);
+		if (userResolvedPath !== undefined) {
+			return userResolvedPath;
+		}
+
 		if (exportingModuleRelativePath[0] === '.') {
 			const fullImportModulePath = pathModule.join(this.cwd, importingModulePath);
 			const importingModuleDirectory = fullImportModulePath.replace(/\/[^/]+$/g, '');
@@ -170,7 +177,7 @@ class ModuleParser {
 
 }
 
-export function readModules({ cwd, sources, aliases, fileReader, babel: userBabelOptions }) {
+export function readModules({ cwd, sources, aliases, resolveModulePath, fileReader, babel: userBabelOptions }) {
 	const babelOptions = {
 		plugins: userBabelOptions.plugins || []
 	};
@@ -181,7 +188,7 @@ export function readModules({ cwd, sources, aliases, fileReader, babel: userBabe
 				try {
 					const ast = babel.transform(fileContents, babelOptions).ast;
 
-					const moduleParser = new ModuleParser({ cwd, filePath, aliases, ast });
+					const moduleParser = new ModuleParser({ cwd, filePath, aliases, resolveModulePath, ast });
 					return moduleParser.parseModule();
 				} catch (error) {
 					throw generateParsingErrorMessage(filePath, error);

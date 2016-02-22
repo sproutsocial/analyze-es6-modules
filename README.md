@@ -79,6 +79,25 @@ The exported function takes an object of configuration options that are describe
      }
  }
  ```
+- `resolveModulePath`: A function that can replace any module path with an arbitrary user-defined module. The function receives a single object argument with three properties:
+ - `cwd`: The analyzer's current working directory
+ - `path`: The path that can be resolved to a different path
+ - `importingModulePath`: The resolved path of the module importing the path above
+ The function can either return a string which is the new path that will be used, or `undefined` to signal that the path should be resolved in the default manner.
+ 
+ Note that this function is called **before** any other kind of resolution is done, including aliases. Here's a usage example:
+ 
+ ```js
+ resolveModulePath: function(options) {
+     if (options.path.indexOf('/old_directory/') >= 0) {
+         return options.path.replace('/old_directory/', '/new_directory/');
+     }
+     
+     if (options.path === 'config') {
+         return 'app/configuration/main';
+     }
+ }
+ ```
  
 ### Output
 
