@@ -179,6 +179,7 @@ class ModuleParser {
 
 export function readModules({ cwd, sources, aliases, resolveModulePath, fileReader, babel: userBabelOptions }) {
 	const babelOptions = {
+		compact: false,
 		plugins: userBabelOptions.plugins || []
 	};
 
