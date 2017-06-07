@@ -53,6 +53,11 @@ class ModuleParser {
 		}
 
 		declaration.specifiers.forEach((specifier) => {
+			// Ignore Flow type imports (for now)
+			if (specifier.importKind === 'type') {
+				return;
+			}
+
 			const lineNumber = specifier.loc.start.line;
 
 			switch (specifier.type) {

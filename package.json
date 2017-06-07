@@ -1,6 +1,6 @@
 {
 	"name": "analyze-es6-modules",
-	"version": "0.6.1",
+	"version": "0.6.2",
 	"description": "Performs static analysis of ES6 modules in your codebase.",
 	"keywords": ["es6", "modules", "es6 modules"],
 	"license": "MIT",
