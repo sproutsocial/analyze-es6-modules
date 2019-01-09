@@ -1,3 +1,8 @@
+## Deprecated
+This package is out of date and its use is discourged. We recommend you use something like [eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import) to acheive the same result. The repository is archived but feel free to fork!
+
+---
+
 # analyze-es6-modules [![Build Status](https://travis-ci.org/sproutsocial/analyze-es6-modules.svg?branch=master)](https://travis-ci.org/sproutsocial/analyze-es6-modules)
 
 analyze-es6-modules is a program that reads and statically analyzes ES6 module statements in your Javascript project. It builds a list of all modules in your project, including their imports and exports, then determines if those imports and exports align. It can warn about mistakes such as bad module references or bad imports, and even warn about unused exports. The task is highly configurable so that it can adapt to a wide range of projects.
